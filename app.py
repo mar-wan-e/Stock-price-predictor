@@ -184,55 +184,55 @@ st.markdown("---")
 st.markdown("---")
         
         # Predict button
-        if st.button(f"🚀 PREDICT TOMORROW'S PRICE", type="primary", use_container_width=True):
-            with st.spinner("Analyzing data and making prediction..."):
-                try:
-                    # Prepare data
-                    data = df[['Open', 'High', 'Low', 'Close', 'Volume']].values
-                    
-                    scaler = MinMaxScaler()
-                    scaler.fit_transform(data)
-                    
-                    close_scaler = MinMaxScaler()
-                    close_scaler.fit(df[['Close']].values)
-                    
-                    # Get last 5 days
-                    last_5 = data[-5:]
-                    last_5_scaled = scaler.transform(last_5)
-                    input_data = last_5_scaled.reshape(1, 5, 5)
-                    
-                    # Predict
-                    prediction_scaled = model.predict(input_data, verbose=0)
-                    tomorrow_price = close_scaler.inverse_transform(prediction_scaled)[0][0]
-                    
-                    today_price = df['Close'].iloc[-1]
-                    pred_change = tomorrow_price - today_price
-                    pred_pct_change = (pred_change / today_price) * 100
-                    
-                    # Display prediction
-                    st.success("✅ Prediction Complete!")
-                    
-                    col1, col2, col3, col4 = st.columns(4)
-                    
-                    with col1:
-                        st.metric("Today's Close", f"${today_price:.2f}")
-                    
-                    with col2:
-                        st.metric("Tomorrow's Prediction", f"${tomorrow_price:.2f}")
-                    
-                    with col3:
-                        st.metric("Expected Change", f"${pred_change:+.2f}")
-                    
-                    with col4:
-                        st.metric("Expected % Change", f"{pred_pct_change:+.2f}%")
-                    
-                    # Direction
-                    if pred_change > 0:
-                        st.success(f"📈 **Prediction: Price expected to GO UP**")
-                    else:
-                        st.error(f"📉 **Prediction: Price expected to GO DOWN**")
-                    
-                    # ========================================
+if st.button(f"🚀 PREDICT TOMORROW'S PRICE", type="primary", use_container_width=True):
+with st.spinner("Analyzing data and making prediction..."):
+try:
+# Prepare data
+data = df[['Open', 'High', 'Low', 'Close', 'Volume']].values
+
+scaler = MinMaxScaler()
+scaler.fit_transform(data)
+
+close_scaler = MinMaxScaler()
+close_scaler.fit(df[['Close']].values)
+
+# Get last 5 days
+last_5 = data[-5:]
+last_5_scaled = scaler.transform(last_5)
+input_data = last_5_scaled.reshape(1, 5, 5)
+
+# Predict
+prediction_scaled = model.predict(input_data, verbose=0)
+tomorrow_price = close_scaler.inverse_transform(prediction_scaled)[0][0]
+
+today_price = df['Close'].iloc[-1]
+pred_change = tomorrow_price - today_price
+pred_pct_change = (pred_change / today_price) * 100
+
+# Display prediction
+st.success("✅ Prediction Complete!")
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+st.metric("Today's Close", f"${today_price:.2f}")
+
+with col2:
+st.metric("Tomorrow's Prediction", f"${tomorrow_price:.2f}")
+
+with col3:
+st.metric("Expected Change", f"${pred_change:+.2f}")
+
+with col4:
+st.metric("Expected % Change", f"{pred_pct_change:+.2f}%")
+
+# Direction
+if pred_change > 0:
+st.success(f"📈 **Prediction: Price expected to GO UP**")
+else:
+st.error(f"📉 **Prediction: Price expected to GO DOWN**")
+
+# ========================================
 # PREDICTION CHARTS (After PREDICT button)
 # ========================================
 
