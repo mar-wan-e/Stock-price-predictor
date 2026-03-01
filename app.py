@@ -40,14 +40,20 @@ MODELS = {
     }
 }
 
-# Load models
+# Load models (FIXED VERSION)
 @st.cache_resource
 def load_models():
+    import os
     models = {}
     for name, config in MODELS.items():
+        model_path = config["model_file"]
         try:
-            models[name] = load_model(config["model_file"])
-        except:
+            if os.path.exists(model_path):
+                models[name] = load_model(model_path, compile=False)
+            else:
+                models[name] = None
+        except Exception as e:
+            st.sidebar.error(f"Error loading {model_path}: {str(e)}")
             models[name] = None
     return models
 
