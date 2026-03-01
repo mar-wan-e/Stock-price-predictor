@@ -181,7 +181,7 @@ with tab2:
 
 st.markdown("---")
         
-        st.markdown("---")
+st.markdown("---")
         
         # Predict button
         if st.button(f"🚀 PREDICT TOMORROW'S PRICE", type="primary", use_container_width=True):
