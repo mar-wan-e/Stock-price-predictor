@@ -6,6 +6,14 @@ import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 from tensorflow.keras.models import load_model
 import datetime
+import os
+
+# Debug: Show what files exist
+st.sidebar.markdown("---")
+st.sidebar.markdown("**Debug Info:**")
+files_in_repo = os.listdir(".")
+h5_files = [f for f in files_in_repo if f.endswith('.h5')]
+st.sidebar.write(f"Found .h5 files: {h5_files}")
 
 st.set_page_config(page_title="Stock Price Predictor")
 
