@@ -185,7 +185,7 @@ st.markdown("---")
         
         # Predict button
 if st.button(f"🚀 PREDICT TOMORROW'S PRICE", type="primary", use_container_width=True):
-        with st.spinner("Analyzing data and making prediction..."):
+    with st.spinner("Analyzing data and making prediction..."):
         try:
         # Prepare data
         data = df[['Open', 'High', 'Low', 'Close', 'Volume']].values
