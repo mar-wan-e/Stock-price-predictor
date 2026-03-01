@@ -8,6 +8,7 @@ from tensorflow.keras.models import load_model
 import datetime
 import os
 import matplotlib.patches as mpatches
+from matplotlib.dates import date2num, DateFormatter
 
 st.set_page_config(page_title="Stock Price Predictor")
 
@@ -126,7 +127,6 @@ else:
         # TAB 1: LINE CHARTS
         # ========================================
         with tab1:
-            # Graph 1: 90-Day Line Chart
             st.subheader("📈 Price History - Line Chart (Last 90 Days)")
             fig1, ax1 = plt.subplots(figsize=(12, 5))
             ax1.plot(df.index[-90:], df['Close'].tail(90), linewidth=2, color='#1f77b4')
@@ -143,31 +143,28 @@ else:
         # TAB 2: CANDLESTICK CHARTS
         # ========================================
         with tab2:
-            # Graph 2: 90-Day Candlestick Chart
             st.subheader("🕯️ Price History - Candlestick Chart (Last 90 Days)")
             
             fig2, ax2 = plt.subplots(figsize=(12, 6))
             df_90 = df.tail(90)
             
             for i in range(len(df_90)):
-                date = df_90.index[i]
+                date_num = date2num(df_90.index[i])
                 open_price = df_90['Open'].iloc[i]
                 close_price = df_90['Close'].iloc[i]
                 high_price = df_90['High'].iloc[i]
                 low_price = df_90['Low'].iloc[i]
                 
-                # Green if up, red if down
                 color = 'green' if close_price >= open_price else 'red'
                 
-                # High-low line
-                ax2.plot([date, date], [low_price, high_price], color='black', linewidth=0.5)
+                ax2.plot([date_num, date_num], [low_price, high_price], color='black', linewidth=0.5)
                 
-                # Open-close box
                 height = abs(close_price - open_price)
                 bottom = min(open_price, close_price)
-                ax2.add_patch(mpatches.Rectangle((date, bottom), width=0.6, height=height, 
+                ax2.add_patch(mpatches.Rectangle((date_num - 0.3, bottom), width=0.6, height=height, 
                                                  facecolor=color, edgecolor='black', linewidth=0.5))
             
+            ax2.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
             ax2.set_xlabel('Date', fontsize=11)
             ax2.set_ylabel('Price ($)', fontsize=11)
             ax2.set_title(f'{config["ticker"]} - 90 Day Candlestick Chart', fontsize=12, fontweight='bold')
@@ -182,7 +179,6 @@ else:
         if st.button(f"🚀 PREDICT TOMORROW'S PRICE", type="primary", use_container_width=True):
             with st.spinner("Analyzing data and making prediction..."):
                 try:
-                    # Prepare data
                     data = df[['Open', 'High', 'Low', 'Close', 'Volume']].values
                     
                     scaler = MinMaxScaler()
@@ -191,12 +187,10 @@ else:
                     close_scaler = MinMaxScaler()
                     close_scaler.fit(df[['Close']].values)
                     
-                    # Get last 5 days
                     last_5 = data[-5:]
                     last_5_scaled = scaler.transform(last_5)
                     input_data = last_5_scaled.reshape(1, 5, 5)
                     
-                    # Predict
                     prediction_scaled = model.predict(input_data, verbose=0)
                     tomorrow_price = close_scaler.inverse_transform(prediction_scaled)[0][0]
                     
@@ -204,7 +198,6 @@ else:
                     pred_change = tomorrow_price - today_price
                     pred_pct_change = (pred_change / today_price) * 100
                     
-                    # Display prediction
                     st.success("✅ Prediction Complete!")
                     
                     col1, col2, col3, col4 = st.columns(4)
@@ -221,34 +214,23 @@ else:
                     with col4:
                         st.metric("Expected % Change", f"{pred_pct_change:+.2f}%")
                     
-                    # Direction
                     if pred_change > 0:
                         st.success(f"📈 **Prediction: Price expected to GO UP**")
                     else:
                         st.error(f"📉 **Prediction: Price expected to GO DOWN**")
                     
-                    # ========================================
-                    # PREDICTION CHARTS (After PREDICT button)
-                    # ========================================
-                    
-                    # Prediction tabs
                     pred_tab1, pred_tab2 = st.tabs(["📈 Line Prediction", "🕯️ Candlestick Prediction"])
                     
-                    # ========================================
-                    # PREDICTION TAB 1: LINE CHART
-                    # ========================================
                     with pred_tab1:
                         st.subheader("📊 Line Chart with Prediction (30 Days)")
                         
                         fig3, ax3 = plt.subplots(figsize=(12, 6))
                         
-                        # Historical line
                         recent_dates = df.index[-30:]
                         recent_prices = df['Close'].tail(30).values
                         ax3.plot(recent_dates, recent_prices, 'o-', 
                                 label='Historical Prices', color='#1f77b4', linewidth=2, markersize=4)
                         
-                        # Tomorrow prediction
                         tomorrow_date = df.index[-1] + pd.Timedelta(days=1)
                         ax3.plot([df.index[-1], tomorrow_date], 
                                 [today_price, tomorrow_price],
@@ -266,18 +248,14 @@ else:
                         
                         st.pyplot(fig3)
                     
-                    # ========================================
-                    # PREDICTION TAB 2: CANDLESTICK CHART
-                    # ========================================
                     with pred_tab2:
                         st.subheader("🕯️ Candlestick Chart with Prediction (30 Days)")
                         
                         fig4, ax4 = plt.subplots(figsize=(12, 6))
                         df_30 = df.tail(30)
                         
-                        # Plot candlesticks for last 30 days
                         for i in range(len(df_30)):
-                            date = df_30.index[i]
+                            date_num = date2num(df_30.index[i])
                             open_price = df_30['Open'].iloc[i]
                             close_price = df_30['Close'].iloc[i]
                             high_price = df_30['High'].iloc[i]
@@ -285,30 +263,30 @@ else:
                             
                             color = 'green' if close_price >= open_price else 'red'
                             
-                            # High-low line
-                            ax4.plot([date, date], [low_price, high_price], color='black', linewidth=0.5)
+                            ax4.plot([date_num, date_num], [low_price, high_price], color='black', linewidth=0.5)
                             
-                            # Open-close box
                             height = abs(close_price - open_price)
                             bottom = min(open_price, close_price)
-                            ax4.add_patch(mpatches.Rectangle((date, bottom), width=0.6, height=height, 
+                            ax4.add_patch(mpatches.Rectangle((date_num - 0.3, bottom), width=0.6, height=height, 
                                                              facecolor=color, edgecolor='black', 
                                                              linewidth=0.5, alpha=0.7))
                         
-                        # Add tomorrow's prediction
                         tomorrow_date = df.index[-1] + pd.Timedelta(days=1)
-                        ax4.plot([df.index[-1], tomorrow_date], 
+                        tomorrow_date_num = date2num(tomorrow_date)
+                        today_date_num = date2num(df.index[-1])
+                        
+                        ax4.plot([today_date_num, tomorrow_date_num], 
                                 [today_price, tomorrow_price],
                                 'o--', label='Tomorrow Prediction', 
                                 color='blue', linewidth=3, markersize=12, zorder=5)
                         
-                        # Annotation
                         ax4.annotate(f'${tomorrow_price:.2f}', 
-                                    xy=(tomorrow_date, tomorrow_price),
+                                    xy=(tomorrow_date_num, tomorrow_price),
                                     xytext=(10, 10), textcoords='offset points',
                                     bbox=dict(boxstyle='round,pad=0.5', fc='yellow', alpha=0.7),
                                     fontsize=11, fontweight='bold')
                         
+                        ax4.xaxis.set_major_formatter(DateFormatter('%Y-%m-%d'))
                         ax4.set_xlabel('Date', fontsize=11)
                         ax4.set_ylabel('Price ($)', fontsize=11)
                         ax4.set_title(f'{config["ticker"]} - Candlestick Prediction', 
@@ -320,7 +298,6 @@ else:
                         
                         st.pyplot(fig4)
                     
-                    # Confidence note
                     st.info("""
                     **⚠️ Important Notes:**
                     - This is a machine learning prediction, not financial advice
@@ -333,7 +310,6 @@ else:
     else:
         st.warning("Not enough data available for this ticker.")
 
-# Footer
 st.markdown("---")
 col1, col2, col3 = st.columns(3)
 with col1:
