@@ -21,17 +21,14 @@ MODELS = {
     "Apple Stock (AAPL)": {
         "ticker": "AAPL",
         "model_file": "apple_model.h5",
-        "icon": "🍎"
     },
     "Gold (GLD)": {
         "ticker": "GLD",
         "model_file": "gold_model.h5",
-        "icon": "🥇"
     },
     "Silver (SLV)": {
         "ticker": "SLV",
         "model_file": "silver_model.h5",
-        "icon": "🥈"
     }
 }
 
@@ -104,7 +101,7 @@ else:
                         use_container_width=True)
         
         with col2:
-            st.subheader("💰 Current Stats")
+            st.subheader("Current Stats 💲")
             current_price = df['Close'].iloc[-1]
             prev_price = df['Close'].iloc[-2]
             change = current_price - prev_price
@@ -176,7 +173,7 @@ else:
         st.markdown("---")
         
         # Predict button
-        if st.button(f"🚀 PREDICT TOMORROW'S PRICE", type="primary", use_container_width=True):
+        if st.button(f"PREDICT TOMORROW'S PRICE", type="primary", use_container_width=True):
             with st.spinner("Analyzing data and making prediction..."):
                 try:
                     data = df[['Open', 'High', 'Low', 'Close', 'Volume']].values
