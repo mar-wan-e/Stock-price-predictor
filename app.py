@@ -67,7 +67,7 @@ st.sidebar.info(f"""
 """)
 
 # Main area
-st.header(f"{config['icon']} {selected_stock}")
+st.header(f"{selected_stock}")
 
 if model is None:
     st.error(f"❌ Model for {selected_stock} not found!")
