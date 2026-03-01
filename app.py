@@ -324,71 +324,35 @@ with pred_tab2:
     plt.tight_layout()
     
     st.pyplot(fig4)
-```
 
----
-
-## **What You Get:**
-
-### **Before Prediction:**
-- **Tab 1: Line Charts**
-  - 90-day line graph
-- **Tab 2: Candlestick Charts**  
-  - 90-day candlestick graph
-
-### **After Clicking PREDICT:**
-- **Tab 1: Line Prediction**
-  - 30-day line + tomorrow prediction
-- **Tab 2: Candlestick Prediction**
-  - 30-day candlesticks + tomorrow prediction
-
----
-
-## **Visual Layout:**
-```
-┌─────────────────────────────────────────┐
-│  [📈 Line Charts] [🕯️ Candlestick]     │
-│                                         │
-│  Graph showing 90 days                  │
-│  (switches between line/candles)       │
-└─────────────────────────────────────────┘
-
-[🚀 PREDICT BUTTON]
-
-┌─────────────────────────────────────────┐
-│  [📈 Line Prediction] [🕯️ Candlestick] │
-│                                         │
-│  Graph showing 30 days + tomorrow       │
-│  (switches between line/candles)       │
-└─────────────────────────────────────────┘
                     
-                    # Tomorrow
-                    tomorrow_date = df.index[-1] + pd.Timedelta(days=1)
-                    ax2.plot([df.index[-1], tomorrow_date], 
-                            [today_price, tomorrow_price],
-                            'o--', label='Tomorrow Prediction', 
-                            color='red', linewidth=3, markersize=12)
-                    
-                    # Styling
-                    ax2.set_title(f'{config["ticker"]} - Price Prediction', 
-                                fontsize=14, fontweight='bold')
-                    ax2.set_xlabel('Date', fontsize=11)
-                    ax2.set_ylabel('Price ($)', fontsize=11)
-                    ax2.legend(fontsize=11)
-                    ax2.grid(True, alpha=0.3, linestyle='--')
-                    plt.xticks(rotation=45)
-                    plt.tight_layout()
-                    
-                    st.pyplot(fig2)
-                    
-                    # Confidence note
-                    st.info("""
-                    **⚠️ Important Notes:**
-                    - This is a machine learning prediction, not financial advice
-                    - Past performance does not guarantee future results
-                    - Always do your own research before making investment decisions
-                    """)
-                    
+# Tomorrow
+tomorrow_date = df.index[-1] + pd.Timedelta(days=1)
+ax2.plot([df.index[-1], tomorrow_date], 
+        [today_price, tomorrow_price],
+        'o--', label='Tomorrow Prediction', 
+        color='red', linewidth=3, markersize=12)
+
+# Styling
+ax2.set_title(f'{config["ticker"]} - Price Prediction', 
+            fontsize=14, fontweight='bold')
+ax2.set_xlabel('Date', fontsize=11)
+ax2.set_ylabel('Price ($)', fontsize=11)
+ax2.legend(fontsize=11)
+ax2.grid(True, alpha=0.3, linestyle='--')
+plt.xticks(rotation=45)
+plt.tight_layout()
+
+st.pyplot(fig2)
+
+# Confidence note
+st.info("""
+**⚠️ Important Notes:**
+- This is a machine learning prediction, not financial advice
+- Past performance does not guarantee future results
+- Always do your own research before making investment decisions
+""")
+
                 except Exception as e:
                     st.error(f"Prediction error: {str(e)}")
     else:
