@@ -54,7 +54,7 @@ def load_models():
 models = load_models()
 
 # Sidebar - Select stock
-st.sidebar.title("Select Asset")
+st.sidebar.title("Select Stock")
 selected_stock = st.sidebar.radio("Choose:", list(MODELS.keys()))
 
 config = MODELS[selected_stock]
