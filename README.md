@@ -4,7 +4,7 @@ AI-powered stock price prediction using LSTM neural networks for Apple, Gold, an
 
 ## 🚀 Live Demo
 
-[Click here to use the app](https://your-app-url.streamlit.app)
+[Click here to use the app](https://apple-stocks-predictor.streamlit.app/)
 
 ## Features
 
